@@ -18,6 +18,8 @@ import requests
 
 def main(argv):
 
+  deployment_list=[1,2,3,7,9,11]
+  resourse_list = [4,8,10]
   credentials = ServiceAccountCredentials.from_json_keyfile_name(
       'new-key.json',
       scopes='https://www.googleapis.com/auth/cloud-platform')
@@ -52,49 +54,57 @@ def main(argv):
     else:
       os.system("gcloud deployment-manager deployments create "+instance+" --config "+conf_file)
   else:
+    print(int(x))
     project = input("Enter the name of the project: ")  
-    if(int(x) ==(1 or 2 or 3 or 7 or 9 or 11)):
+    if((int(x)) in deployment_list):
       deployment = input("Enter the name of the deployment:")
       if(int(x)==1):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="POST")
+        print(content)
+
       elif(int(x)==2):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="DELETE")
-        
+        print(content)
+
       elif(int(x)==3):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="GET")
-        
+        print(content)
+
       elif(int(x)==7):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="PATCH")
-        
+        print(content)
+
       elif(int(x)==9):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/stop',method="POST")
-        
+        print(content)
+
       elif(int(x)==11):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="PUT")
-        
+        print(content)
 
         
-    elif(int(x)==(4 or 8 or 10)):
+    elif(int(x) in resourse_list):
       resource = input("Enter the resource name:")
       if(int(x)==4):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+resource+'/getIamPolicy',method="GET")
-        
+        print(content)
+
       if(int(x)==8):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+resource+'/setIamPolic',method="POST")
-        
+        print(content)
+
       if(int(x)==10):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+resource+'/testIamPermissions',method="POST")
-        
+        print(content)
 
     else:
       if(int(x)==5):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments',method="POST")
-        
+        print(content)
+
       if(int(x)==6):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments',method="GET")
-    print(content)  
-
-  
+        print(content)
     
 
   #content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/deployment-manager-test-282406/global/deployments',method="GET")

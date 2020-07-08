@@ -1,13 +1,14 @@
 import httplib2
 import pprint
 import sys
-from flask import jsonify
 import os
 import validators
 import time
 import pathlib
 from pathlib import Path
 import shutil
+import json
+from operator import itemgetter 
 
 
 
@@ -20,8 +21,9 @@ def main(argv):
 
   deployment_list=[1,2,3,7,9,11]
   resourse_list = [4,8,10]
+  content = None
   credentials = ServiceAccountCredentials.from_json_keyfile_name(
-      'new-key.json',
+      'new-key2.json',
       scopes='https://www.googleapis.com/auth/cloud-platform')
 
 
@@ -32,6 +34,7 @@ def main(argv):
 
   if(int(x)==12):
     os.system("gcloud projects list")
+    project = input("Enter the name of the project:")
     instance = input("Enter your instance name:")
     conf_file=input("List the complete path of your config file or its github url:")
     valid=validators.url(conf_file)
@@ -53,64 +56,67 @@ def main(argv):
       os.system("gcloud deployment-manager deployments create "+instance+" --config "+clone[len(clone)-1])
     else:
       os.system("gcloud deployment-manager deployments create "+instance+" --config "+conf_file)
+    content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+instance,method="GET")
+    new_obj = json.loads(content[1])
+    print(new_obj)
+
   else:
     print(int(x))
     project = input("Enter the name of the project: ")  
     if((int(x)) in deployment_list):
       deployment = input("Enter the name of the deployment:")
       if(int(x)==1):
-        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="POST")
-        print(content)
+        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment,method="POST")
+        
 
       elif(int(x)==2):
-        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="DELETE")
-        print(content)
+        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment,method="DELETE")
+        
 
       elif(int(x)==3):
-        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="GET")
-        print(content)
+        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment,method="GET")
+        new_obj = json.loads(content[1])
+        
 
       elif(int(x)==7):
-        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="PATCH")
-        print(content)
+        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment,method="PATCH")
+        
 
       elif(int(x)==9):
-        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/stop',method="POST")
-        print(content)
+        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/setIamPolicy',method="POST")
+        
 
       elif(int(x)==11):
-        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment+'/cancelPreview',method="PUT")
-        print(content)
+        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+deployment,method="PUT")
+        
 
         
     elif(int(x) in resourse_list):
       resource = input("Enter the resource name:")
       if(int(x)==4):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+resource+'/getIamPolicy',method="GET")
-        print(content)
+        
 
       if(int(x)==8):
-        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+resource+'/setIamPolic',method="POST")
-        print(content)
+        content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+resource+'/setIamPolicy',method="POST")
+        
 
       if(int(x)==10):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+resource+'/testIamPermissions',method="POST")
-        print(content)
+        
 
     else:
       if(int(x)==5):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments',method="POST")
-        print(content)
+        
 
       if(int(x)==6):
         content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments',method="GET")
-        print(content)
+        #json_data = eval(content)
+    new_obj = json.loads(content[1])
+    print(new_obj)#['deployments'][0]['name']
+
     
-
-  #content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/deployment-manager-test-282406/global/deployments',method="GET")
-  #print(content[1][6])
-  #pprint.p
-
 
 if __name__ == '__main__':
   x = input("1.Cancel and removes the preview currently associated with the deployment.\n 2.Delete a deployment and all of the resources in the deployment.\n 3.Get information about a specific deployment.\n 4.Get the access control policy for a resource. May be empty if no such policy or resource exists\n 5.Create a deployment and all of the resources described by the deployment manifest.\n 6.List all deployments for a given project.\n 7.Patch a deployment and all of the resources described by the deployment manifest. This method supports patch semantics.\n 8.Set the access control policy on the specified resource. Replaces any existing policy\n 9.Stops an ongoing operation. This does not roll back any work that has already been completed, but prevents any new work from being started.\n 10.Returns permissions that a caller has on the specified resource\n 11.Updates a deployment and all of the resources described by the deployment manifest.\n 12.To deploy a resource from local file system or directly from github \nEnter the correspinding no of operation you wish to do:")

@@ -3,6 +3,8 @@
   remote_user: cloud_user
   become: yes
   tasks:
+    - name: delete any existing git repo
+      shell: rm -rf python-client-google-deployment-manager/
     - name: cloning git repo
       shell: git clone https://github.com/prudhvireddym/python-client-google-deployment-manager.git
     - name: Cloud SDK distribution URI as a package source
@@ -28,7 +30,6 @@
         - google-cloud-sdk
         state: latest
     - name: Change directory 
-      shell: 
-        chdir: /python-client-google-deployment-manager
+      command: chdir=/python-client-google-deployment-manager
     - name: Creating virtualenvironment ,activating it , installing dependencies
       shell: pip3 install venv | virtualenv venv | source venv/bin/activate | pip3 install -r requirements.txt | Python3 gcp-api-upgraded.py

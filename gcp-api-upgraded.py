@@ -162,4 +162,4 @@ if __name__ == '__main__':
   x = input("1.Cancel and removes the preview currently associated with the deployment.\n 2.Delete a deployment and all of the resources in the deployment.\n 3.Get information about a specific deployment.\n 4.Get the access control policy for a resource. May be empty if no such policy or resource exists\n 5.Create a deployment and all of the resources described by the deployment manifest.\n 6.List all deployments for a given project.\n 7.Patch a deployment and all of the resources described by the deployment manifest. This method supports patch semantics.\n 8.Set the access control policy on the specified resource. Replaces any existing policy\n 9.Stops an ongoing operation. This does not roll back any work that has already been completed, but prevents any new work from being started.\n 10.Returns permissions that a caller has on the specified resource\n 11.Updates a deployment and all of the resources described by the deployment manifest.\n 12.To deploy a resource from local file system or directly from github \nEnter the correspinding no of operation you wish to do:")
   main(sys.argv)
 
-#for cmmit
+#for cmmit 2

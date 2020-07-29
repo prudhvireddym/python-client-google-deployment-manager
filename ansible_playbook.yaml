@@ -15,7 +15,7 @@
         - apt-transport-https
         - ca-certificates
         - gnupg
-        - python-pip
+        - python3-pip
         state: latest
         update_cache: true
     - name: importing google cloud public key
@@ -29,7 +29,17 @@
         name:
         - google-cloud-sdk
         state: latest
-    - name: Change directory 
-      command: chdir=/python-client-google-deployment-manager
-    - name: Creating virtualenvironment ,activating it , installing dependencies
-      shell: pip3 install venv | virtualenv venv | source venv/bin/activate | pip3 install -r requirements.txt | Python3 gcp-api-upgraded.py
+    - name: Change directory
+      shell: cd python-client-google-deployment-manager/
+    - name: Installing Virtualenv
+      shell: pip3 install virtualenv
+    - name:  Creating virtualenv
+      shell: virtualenv -p /usr/bin/python3 venv
+    - name: Getting present directoy
+      shell: ls
+    - name: Activating Virtualenv
+      shell: . venv/bin/activate
+    - name: installing requirements.txt
+      shell: pip3 install -r python-client-google-deployment-manager/requirements.txt
+    - name: Running GCP_API_Python_file
+      shell: python3 python-client-google-deployment-manager/gcp-api-upgraded.py

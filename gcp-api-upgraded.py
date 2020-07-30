@@ -27,7 +27,11 @@ import random
 projects_parsed = []
 Projects_dict= {}
 
-Deployments_dict = {}
+Deployments_dict = {
+    "Deployment_message":"The below resourses were added successfully"
+}
+
+
 
 def get_projects():
     projects = (str(subprocess.check_output('gcloud projects list',shell=True))).split('\\r\\n')
@@ -43,9 +47,11 @@ def get_projects():
 
 def get_deployment_output(cmnd):
     deployments_parse = (str(subprocess.check_output(cmnd,shell=True))).split('\\r\\n')
-    Deployments_dict.update( {"Output_Message": deployments_parse[1:len(deployments_parse)-1]} )
+    Deployments_dict.update( {"Resources Added": deployments_parse[1:len(deployments_parse)-1]} )
     deployments_json = json.dumps(Deployments_dict)
     return deployments_json
+
+    
 
 
 
@@ -66,9 +72,9 @@ def main(argv):
 
   if(int(x)==12):
     print(get_projects())
-    project = "deployment-manager-test"#input("Enter the name of the project:")
-    instance = "inst-"+str(random.randint(1000,9999))#input("Enter your instance name:")
-    conf_file= "https://github.com/GoogleCloudPlatform/deploymentmanager-samples/blob/master/examples/v2/cloudsql/client.example.yaml"#input("List the complete path of your config file or its github url:")
+    project = input("Enter the name of the project:")
+    instance = input("Enter your instance name:")
+    conf_file= input("List the complete path of your config file or its github url:")
     valid=validators.url(conf_file)
     if(valid==True):
       clone = conf_file.split('/')
@@ -86,16 +92,21 @@ def main(argv):
           os.system('pwd')
           time.sleep(1)
       cmnd = "gcloud deployment-manager deployments create "+instance+" --config "+clone[len(clone)-1]
-      print("======================================================")
+      print(["=" for i in range(50)])
       try: 
         print(get_deployment_output(cmnd))
       except:
-        Deployments_dict.update( {"Output_Message":"Could not deploy your instance check logs for error"} )
-        print(Deployments_dict)
-      
+            Deployments_dict.update( {"Deployment_message":"Could not deploy your instance check logs for error"} )
+            print(json.dumps(Deployments_dict))
 
     else:
-      os.system("gcloud deployment-manager deployments create "+instance+" --config "+conf_file)
+      cmnd ="gcloud deployment-manager deployments create "+instance+" --config "+conf_file
+      print(["=" for i in range(50)])
+      try: 
+        print(get_deployment_output(cmnd))
+      except:
+            Deployments_dict.update( {"Deployment_message":"Could not deploy your instance check logs for error"} )
+            print(json.dumps(Deployments_dict))
     #content = http.request('https://www.googleapis.com/deploymentmanager/v2/projects/'+project+'/global/deployments/'+instance,method="GET")
     #new_obj = json.loads(content[1])
     #print(new_obj)
@@ -162,4 +173,4 @@ if __name__ == '__main__':
   x = input("1.Cancel and removes the preview currently associated with the deployment.\n 2.Delete a deployment and all of the resources in the deployment.\n 3.Get information about a specific deployment.\n 4.Get the access control policy for a resource. May be empty if no such policy or resource exists\n 5.Create a deployment and all of the resources described by the deployment manifest.\n 6.List all deployments for a given project.\n 7.Patch a deployment and all of the resources described by the deployment manifest. This method supports patch semantics.\n 8.Set the access control policy on the specified resource. Replaces any existing policy\n 9.Stops an ongoing operation. This does not roll back any work that has already been completed, but prevents any new work from being started.\n 10.Returns permissions that a caller has on the specified resource\n 11.Updates a deployment and all of the resources described by the deployment manifest.\n 12.To deploy a resource from local file system or directly from github \nEnter the correspinding no of operation you wish to do:")
   main(sys.argv)
 
-#for cmmit 2
+#for cmm
